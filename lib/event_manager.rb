@@ -7,6 +7,15 @@ def clean_zipcode(zipcode)
   # if the zip code is less than five(5) digits, add zeros(0) to the front until it becomes five digits
   zipcode.to_s.rjust(5, "0")[0..4]
 end
+
+def save_thank_you_letters(id, form_letter)
+  Dir.mkdir("output") unless Dir.exists? "output"
+  filename = "output/thanks_#{ id }.html"
+
+  File.open(filename, 'w') do |file|
+    file.puts form_letter
+  end
+end
 puts "--------------------------------------------------"
 puts "Event Manager Initialized".center(50)
 puts "--------------------------------------------------"
@@ -33,9 +42,11 @@ erb_template = ERB.new template_letter
 
 contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
 contents.each do |row|
+  id = row[0]
   first_name = row[:first_name]
   zip_code = clean_zipcode(row[:zipcode])
 
   form_letter = erb_template.result(binding)
-  puts form_letter
+
+  save_thank_you_letters(id, form_letter)
 end
