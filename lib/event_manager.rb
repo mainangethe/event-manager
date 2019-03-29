@@ -1,4 +1,5 @@
-require "csv"
+require 'csv'
+require 'erb'
 
 def clean_zipcode(zipcode)
   # if the zip code is exactly five(5) digits, assume that it is ok
@@ -27,15 +28,14 @@ puts
 # Use a CSV parser
 # It will have more options beyond our custom one
 
-template_letter = File.read "form_letter.html"
+template_letter = File.read "form_letter.erb"
+erb_template = ERB.new template_letter
 
 contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
 contents.each do |row|
   first_name = row[:first_name]
   zip_code = clean_zipcode(row[:zipcode])
 
-  personal_letter = template_letter.gsub('FIRST_NAME', first_name)
-  personal_letter.gsub!('ZIPCODE', zip_code)
-
-  puts personal_letter
+  form_letter = erb_template.result(binding)
+  puts form_letter
 end
