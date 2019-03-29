@@ -27,10 +27,15 @@ puts
 # Use a CSV parser
 # It will have more options beyond our custom one
 
+template_letter = File.read "form_letter.html"
+
 contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
 contents.each do |row|
   first_name = row[:first_name]
   zip_code = clean_zipcode(row[:zipcode])
 
-  puts "#{ first_name } : #{ zip_code }"
+  personal_letter = template_letter.gsub('FIRST_NAME', first_name)
+  personal_letter.gsub!('ZIPCODE', zip_code)
+
+  puts personal_letter
 end
