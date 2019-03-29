@@ -1,9 +1,27 @@
-puts "Event Manager Initialized"
+require "csv"
+puts "--------------------------------------------------"
+puts "Event Manager Initialized".center(50)
+puts "--------------------------------------------------"
+puts
+# Option - 1
+# Build a CSV Parser
+# contents = File.read "event_attendees.csv"
+# puts contents
+#
+# lines = File.readlines "event_attendees.csv"
+# lines.each_with_index do |line, index|
+#   next if index == 0
+#   columns = line.split(',')
+#   name = columns[2]
+#   puts name
+# end
 
-contents = File.read "event_attendees.csv"
-puts contents
+# Option 2
+# Use a CSV parser
+# It will have more options beyond our custom one
 
-lines = File.readlines "event_attendees.csv"
-lines.each do |line|
-  puts line
+contents = CSV.open "event_attendees.csv", headers: true
+contents.each do |row|
+  name = row[2]
+  puts name
 end
