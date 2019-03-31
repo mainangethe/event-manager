@@ -1,5 +1,6 @@
 require 'csv'
 require 'erb'
+require 'date'
 
 def clean_zipcode(zipcode)
   # if the zip code is exactly five(5) digits, assume that it is ok
@@ -57,8 +58,12 @@ contents.each do |row|
   first_name = row[:first_name]
   zip_code = clean_zipcode(row[:zipcode])
   phonenumber = clean_phonenumber row[:homephone]
+  american_date = "%m/%d/%y %H:%M"
+  registration_date = DateTime.strptime(row[:regdate], american_date)
+
+
+  puts "#{ first_name }: Registered at #{ registration_date.hour }"
 
   form_letter = erb_template.result(binding)
-
-  save_thank_you_letters(id, form_letter)
+  # save_thank_you_letters(id, form_letter)
 end
