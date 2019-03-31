@@ -29,9 +29,15 @@ def clean_phonenumber phonenumber
   phonenumber
 end
 
+
 def time_tracking registration_hour_array
   registration_hour_array.uniq.each do |element|
     puts "Registered at #{element}: #{ registration_hour_array.count(element) } time(s)"
+  end
+end
+def day_tracking registration_day_array
+  registration_day_array.uniq.each do |element|
+    puts "Registered on #{element}: #{ registration_day_array.count(element) } time(s)"
   end
 end
 puts "--------------------------------------------------"
@@ -58,6 +64,8 @@ puts
 template_letter = File.read "form_letter.erb"
 erb_template = ERB.new template_letter
 hours_array = []
+weekdays_array = []
+
 
 contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
 contents.each do |row|
@@ -68,10 +76,11 @@ contents.each do |row|
   american_date = "%m/%d/%y %H:%M"
   registration_date = DateTime.strptime(row[:regdate], american_date)
   hours_array << registration_date.hour
+  weekdays_array << registration_date.strftime('%A')
 
-  # puts "#{ first_name }: Registered at #{ registration_date.hour }"
   form_letter = erb_template.result(binding)
-  # save_thank_you_letters(id, form_letter)
+  save_thank_you_letters(id, form_letter)
 end
 
 time_tracking hours_array
+day_tracking weekdays_array
