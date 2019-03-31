@@ -16,6 +16,17 @@ def save_thank_you_letters(id, form_letter)
     file.puts form_letter
   end
 end
+
+def clean_phonenumber phonenumber
+  phonenumber.gsub!(/[\\\-\(\)\.\s\+\,\D]/,'')
+
+  if phonenumber.length < 10
+    phonenumber = phonenumber.ljust(10, "0")
+  elsif (phonenumber.length > 10 and phonenumber[0] == "1")
+    phonenumber.gsub!(/^(1)/,'')
+  end
+  phonenumber
+end
 puts "--------------------------------------------------"
 puts "Event Manager Initialized".center(50)
 puts "--------------------------------------------------"
@@ -45,6 +56,7 @@ contents.each do |row|
   id = row[0]
   first_name = row[:first_name]
   zip_code = clean_zipcode(row[:zipcode])
+  phonenumber = clean_phonenumber row[:homephone]
 
   form_letter = erb_template.result(binding)
 
